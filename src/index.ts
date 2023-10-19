@@ -2,13 +2,15 @@ import { input, confirm } from "@inquirer/prompts";
 
 import { error, info, queryGithubAPI, GHTOKEN } from "./utils.js";
 
+import type { ColumnCard, ColumnData } from "./types.ts";
+
 // Read the GitHub token from the system environment
 if (!GHTOKEN) {
 	error("Please set the GHTOKEN environment variable.");
 	process.exit(1);
 }
 
-async function promptForColumnURL() {
+async function promptForColumnURL(): Promise<number> {
 	const url = await input({
 		message:
 			"Enter the GitHub column URL (e.g., https://github.com/orgs/Automattic/projects/148#column-<column-id>):",
@@ -17,8 +19,8 @@ async function promptForColumnURL() {
 	const columnIdMatch = url.match(/#column-(\d+)$/);
 
 	if (columnIdMatch) {
-		const columnId = columnIdMatch[1];
-		const columnData = await fetchColumnData(columnId);
+		const columnId = parseInt(columnIdMatch[1]);
+		const columnData: ColumnData = await fetchColumnData(columnId);
 		info(`Column Name: "${columnData.name}"`);
 
 		const answer = await confirm({
@@ -41,13 +43,13 @@ async function promptForColumnURL() {
 	}
 }
 
-async function fetchColumnData(columnId) {
+async function fetchColumnData(columnId: number): Promise<ColumnData> {
 	const url = `https://api.github.com/projects/columns/${columnId}`;
 
 	return await queryGithubAPI(url);
 }
 
-async function fetchColumnCards(columnId) {
+async function fetchColumnCards(columnId: number): Promise<ColumnCard[]> {
 	const url = `https://api.github.com/projects/columns/${columnId}/cards`;
 
 	return await queryGithubAPI(url);

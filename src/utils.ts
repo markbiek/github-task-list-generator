@@ -3,31 +3,31 @@ import fetch from "node-fetch";
 
 export const GHTOKEN = process.env.GHTOKEN;
 
-export function error(message) {
+export function error(message: string): boolean {
 	console.log("ERROR: " + chalk.red(message));
 
 	return false;
 }
 
-export function success(message) {
+export function success(message: string): boolean {
 	console.log("SUCCESS: " + chalk.green(message));
 
 	return true;
 }
 
-export function warning(message) {
+export function warning(message: string): boolean {
 	console.log("WARNING: " + chalk.yellow(message));
 
 	return true;
 }
 
-export function info(message) {
+export function info(message: string): boolean {
 	console.log(chalk.blue(message));
 
 	return true;
 }
 
-export async function queryGithubAPI(url) {
+export async function queryGithubAPI(url: string): Promise<any> {
 	const headers = {
 		Accept: "application/vnd.github+json",
 		Authorization: `Bearer ${GHTOKEN}`,
