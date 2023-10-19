@@ -1,34 +1,8 @@
-import fetch from "node-fetch";
-import chalk from "chalk";
 import { input, confirm } from "@inquirer/prompts";
 
-function error(message) {
-	console.log("ERROR: " + chalk.red(message));
-
-	return false;
-}
-
-function success(message) {
-	console.log("SUCCESS: " + chalk.green(message));
-
-	return true;
-}
-
-function warning(message) {
-	console.log("WARNING: " + chalk.yellow(message));
-
-	return true;
-}
-
-function info(message) {
-	console.log(chalk.blue(message));
-
-	return true;
-}
+import { error, info, queryGithubAPI, GHTOKEN } from "./utils.js";
 
 // Read the GitHub token from the system environment
-const GHTOKEN = process.env.GHTOKEN;
-
 if (!GHTOKEN) {
 	error("Please set the GHTOKEN environment variable.");
 	process.exit(1);
@@ -64,28 +38,6 @@ async function promptForColumnURL() {
 			"Invalid column URL. Please make sure it includes #column-<column-id>."
 		);
 		process.exit(1);
-	}
-}
-
-async function queryGithubAPI(url) {
-	const headers = {
-		Accept: "application/vnd.github+json",
-		Authorization: `Bearer ${GHTOKEN}`,
-		"X-GitHub-Api-Version": "2022-11-28",
-	};
-
-	try {
-		const response = await fetch(url, { headers });
-		if (response.ok) {
-			const data = await response.json();
-			return data;
-		} else {
-			throw new Error(
-				`Failed to fetch data from GitHub API: ${response.status} ${response.statusText}`
-			);
-		}
-	} catch (error) {
-		throw error;
 	}
 }
 
