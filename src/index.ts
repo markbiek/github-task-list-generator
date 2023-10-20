@@ -61,8 +61,17 @@ async function main() {
 
 	let markdown = "";
 	for (let card of cards) {
-		if (!card.note) {
-			continue;
+		if (
+			!card.note &&
+			Object.hasOwnProperty.call(card, "content_url") &&
+			card.content_url
+		) {
+			// This is a card for a GitHub issue or PR so we need to fetch the title and url from the api.
+			const content = await queryGithubAPI(card?.content_url);
+			const contentId = content.html_url.split("/").slice(-1)[0];
+
+			card.note = content.title;
+			card.note += ` [${contentId}](${content.html_url}})`;
 		}
 
 		let cleanNote = "";

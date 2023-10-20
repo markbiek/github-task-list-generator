@@ -4,4 +4,5 @@ export interface ColumnData {
 
 export interface ColumnCard {
 	note: string;
+	content_url?: string;
 }
